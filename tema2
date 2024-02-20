@@ -1,0 +1,184 @@
+class studyField:
+    MECHANICAL_ENGINEERING = "Mechanical Engineering"
+    SOFTWARE_ENGINEERING = "Software Engineering"
+    FOOD_TECHNOLOGY = "Food Technology"
+    URBANISM_ARCHITECTURE = "Urbanism Architecture"
+    VETERINARY_MEDICINE = "Veterinary Medicine"
+
+class Student:
+    def __init__(self, firstName, lastName, email, enrollmentDate, dateOfBirth):
+        self.firstName = firstName
+        self.lastName = lastName
+        self.email = email
+        self.enrollmentDate = enrollmentDate
+        self.dateOfBirth = dateOfBirth
+
+class Faculty:
+    def __init__(self, name, abbreviation, studyField):
+        self.name = name
+        self.abbreviation = abbreviation
+        self.students = []
+        self.studyField = studyField
+
+    def assign_student(self, student):
+        self.students.append(student)
+        print(f"{student.firstName} {student.lastName} assigned to {self.name}.")
+
+    def graduate_student(self, student_email):
+        for student in self.students:
+            if student.email == student_email:
+                self.students.remove(student)
+                print(f"Student with email {student_email} graduated.")
+                return
+        print(f"Student with email {student_email} not found in {self.name}.")
+
+    def display_current_students(self):
+        print("Currently enrolled students in", self.name)
+        for student in self.students:
+            print(student.firstName, student.lastName)
+
+    def display_graduates(self):
+        print("Graduated students from", self.name)
+
+    def s_check(self, student_email):
+        for student in self.students:
+            if student.email == student_email:
+                return True
+        return False
+
+class University:
+    def __init__(self):
+        self.faculties = []
+
+    def create_faculty(self, name, abbreviation, studyField):
+        self.faculties.append(Faculty(name, abbreviation, studyField))
+        print(f"{name} created.")
+
+    def add_s(self, faculty_name, student):
+        for faculty in self.faculties:
+            if faculty.name == faculty_name:
+                faculty.assign_student(student)
+                return
+        print("Faculty not found.")
+
+    def graduate(self, faculty_name, student_email):
+        for faculty in self.faculties:
+            if faculty.name == faculty_name:
+                faculty.graduate_student(student_email)
+                return
+        print("Faculty not found.")
+
+    def display_s(self, faculty_name):
+        for faculty in self.faculties:
+            if faculty.name == faculty_name:
+                faculty.display_current_students()
+                return
+        print("Faculty not found.")
+
+    def display_g(self, faculty_name):
+        for faculty in self.faculties:
+            if faculty.name == faculty_name:
+                faculty.display_graduates()
+                return
+        print("Faculty not found.")
+
+    def s_check_in_faculty(self, faculty_name, student_email):
+        for faculty in self.faculties:
+            if faculty.name == faculty_name:
+                return faculty.s_check(student_email)
+        print("Faculty not found.")
+        return False
+
+    def search_student(self, student_email):
+        for faculty in self.faculties:
+            if faculty.s_check(student_email):
+                return faculty.name
+        return "Student not found in any faculty."
+
+    def display_f(self):
+        print("University Faculties:")
+        for faculty in self.faculties:
+            print(faculty.name)
+
+    def display_facs_field(self, studyField):
+        print(f"Faculties in {studyField}:")
+        for faculty in self.faculties:
+            if faculty.studyField == studyField:
+                print(faculty.name)
+
+def main():
+    university = University()
+
+    while True:
+        print("1. Create a new faculty.")
+        print("2. Assign a student to a faculty.")
+        print("3. Graduate a student from a faculty.")
+        print("4. Display current enrolled students.")
+        print("5. Display graduates.")
+        print("6. Tell if a student belongs to a faculty.")
+        print("7. Display University faculties.")
+        print("8. Display faculties belonging to a field.")
+        print("9. Display available study fields.")
+        print("0. Exit.")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            name = input("Enter faculty name: ")
+            abbreviation = input("Enter faculty abbreviation: ")
+            studyField = input("Enter study field: ")
+            university.create_faculty(name, abbreviation, studyField)
+
+        elif choice == "2":
+            faculty_name = input("Enter faculty name: ")
+            firstName = input("Enter student first name: ")
+            lastName = input("Enter student last name: ")
+            email = input("Enter student email: ")
+            enrollmentDate = input("Enter student enrollment date: ")
+            dateOfBirth = input("Enter student date of birth: ")
+            student = Student(firstName, lastName, email, enrollmentDate, dateOfBirth)
+            university.add_s(faculty_name, student)
+
+        elif choice == "3":
+            faculty_name = input("Enter faculty name: ")
+            student_email = input("Enter student email: ")
+            university.graduate(faculty_name, student_email)
+
+        elif choice == "4":
+            faculty_name = input("Enter faculty name: ")
+            university.display_s(faculty_name)
+
+        elif choice == "5":
+            faculty_name = input("Enter faculty name: ")
+            university.display_g(faculty_name)
+
+        elif choice == "6":
+            faculty_name = input("Enter faculty name: ")
+            student_email = input("Enter student email: ")
+            if university.s_check_in_faculty(faculty_name, student_email):
+                print(f"The student with email {student_email} studies at {faculty_name}.")
+            else:
+                print(f"The student with email {student_email} doesn't study at {faculty_name}.")
+
+        elif choice == "7":
+            university.display_f()
+
+        elif choice == "8":
+            studyField = input("Enter study field: ")
+            university.display_facs_field(studyField)
+
+        elif choice == "9":
+            print("Study fields:")
+            for field in vars(studyField).values():
+                if isinstance(field, str):
+                    print(field)
+
+        elif choice == "0":
+            print("Exiting program.")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
